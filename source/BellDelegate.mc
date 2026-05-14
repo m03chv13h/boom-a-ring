@@ -52,6 +52,11 @@ class BellDelegate extends WatchUi.BehaviorDelegate {
     //! Record the press time and start a 500 ms hold timer.
     function onKeyPressed(keyEvent as WatchUi.KeyEvent) as Boolean {
         if (keyEvent.getKey() == WatchUi.KEY_UP) {
+            // Clean up any existing timer before creating a new one.
+            if (_holdTimer != null) {
+                _holdTimer.stop();
+                _holdTimer = null;
+            }
             _upPressTime = System.getTimer();
             _holdTimer = new Timer.Timer();
             _holdTimer.start(method(:onHoldTimeout), 500, false);
@@ -62,13 +67,17 @@ class BellDelegate extends WatchUi.BehaviorDelegate {
 
     //! Called by the hold timer – 500 ms elapsed, start ringing.
     function onHoldTimeout() as Void {
-        _upHeld = true;
-        _dataField.startRinging();
+        // Only start ringing if the button is still held.
+        if (_upPressTime > 0) {
+            _upHeld = true;
+            _dataField.startRinging();
+        }
     }
 
     //! Stop ringing (or cancel the hold timer) when the button is released.
     function onKeyReleased(keyEvent as WatchUi.KeyEvent) as Boolean {
         if (keyEvent.getKey() == WatchUi.KEY_UP) {
+            _upPressTime = 0;
             if (_holdTimer != null) {
                 _holdTimer.stop();
                 _holdTimer = null;
@@ -77,7 +86,6 @@ class BellDelegate extends WatchUi.BehaviorDelegate {
                 _dataField.stopRinging();
                 _upHeld = false;
             }
-            _upPressTime = 0;
             return true;
         }
         return false;
