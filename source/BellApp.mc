@@ -2,15 +2,16 @@ import Toybox.Application;
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-//! Edge Bell application entry point.
+//! Edge Bell data-field application entry point.
 class BellApp extends Application.AppBase {
 
     function initialize() {
         AppBase.initialize();
     }
 
-    //! Return the initial view and its delegate.
+    //! Return the data-field view and its input delegate.
     function getInitialView() as [Views] or [Views, InputDelegates] {
-        return [new BellView(), new BellDelegate()];
+        var dataField = new BellDataField();
+        return [dataField, new BellDelegate(dataField)];
     }
 }

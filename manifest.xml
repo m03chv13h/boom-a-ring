@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
     <iq:application id="a3b1c2d4-e5f6-7890-abcd-ef1234567890"
-                    type="watch-app"
+                    type="datafield"
                     name="@Strings.AppName"
                     entry="BellApp"
                     launcherIcon="@Drawables.LauncherIcon"
