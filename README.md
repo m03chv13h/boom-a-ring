@@ -17,8 +17,8 @@ The Garmin Edge beeper is **not** a legal or safe replacement for a physical bic
 
 1. The app opens a full-screen view with the word **BELL**.
 2. On show it plays a tone using `Toybox.Attention.playTone`.
-3. If `Attention.ToneProfile` is available, a custom bell pattern is played:
-   - 4 000 Hz for 120 ms → silence 60 ms → 5 000 Hz for 120 ms → silence 60 ms → 4 000 Hz for 180 ms.
+3. If `Attention.ToneProfile` is available, a bike-bell "tring-tring" pattern is played:
+   - 3 200 Hz → 2 800 Hz → 2 500 Hz (first strike with decay), 120 ms silence, then the same strike again.
 4. Otherwise it falls back to `Attention.TONE_LOUD_BEEP`.
 5. Any button / key press replays the tone.
 

@@ -37,13 +37,20 @@ class BellView extends WatchUi.View {
     static function playBellTone() as Void {
         if (Attention has :playTone) {
             if (Attention has :ToneProfile) {
-                // Custom bell-like pattern
+                // Bike-bell "tring-tring" pattern: two rapid strikes
+                // with a slight downward frequency sweep to mimic the
+                // resonant decay of a metal dome being struck.
                 var tones = [
-                    new Attention.ToneProfile(4000, 120),
-                    new Attention.ToneProfile(0, 60),
-                    new Attention.ToneProfile(5000, 120),
-                    new Attention.ToneProfile(0, 60),
-                    new Attention.ToneProfile(4000, 180)
+                    // First "tring"
+                    new Attention.ToneProfile(3200, 80),
+                    new Attention.ToneProfile(2800, 60),
+                    new Attention.ToneProfile(2500, 40),
+                    // Pause between strikes
+                    new Attention.ToneProfile(0, 120),
+                    // Second "tring"
+                    new Attention.ToneProfile(3200, 80),
+                    new Attention.ToneProfile(2800, 60),
+                    new Attention.ToneProfile(2500, 40),
                 ] as Array<Attention.ToneProfile>;
                 Attention.playTone({:toneProfile => tones});
             } else {
