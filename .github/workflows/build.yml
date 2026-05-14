@@ -20,43 +20,42 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Download Garmin Connect IQ SDK
+      - name: Validate secrets
         run: |
-          echo "Fetching SDK list from Garmin..."
-          SDK_JSON=$(curl -fsSL https://developer.garmin.com/downloads/connect-iq/sdks/sdks.json)
-
-          # Get the latest Linux SDK filename from the manifest (sorted by version)
-          SDK_FILE=$(echo "$SDK_JSON" | jq -r 'sort_by(.version) | last | .linux')
-          if [ -z "$SDK_FILE" ] || [ "$SDK_FILE" = "null" ]; then
-            echo "::error::Could not determine latest Linux SDK from sdks.json"
+          if [ -z "${{ secrets.GARMIN_USERNAME }}" ] || [ -z "${{ secrets.GARMIN_PASSWORD }}" ]; then
+            echo "::error::GARMIN_USERNAME and GARMIN_PASSWORD secrets must be configured. See README for setup instructions."
             exit 1
           fi
 
-          SDK_URL="https://developer.garmin.com/downloads/connect-iq/sdks/${SDK_FILE}"
-          echo "Downloading SDK: $SDK_URL"
+      - name: Install connect-iq-sdk-manager-cli
+        run: |
+          CLI_VERSION="0.8.4"
+          CLI_URL="https://github.com/lindell/connect-iq-sdk-manager-cli/releases/download/v${CLI_VERSION}/connect-iq-sdk-manager-cli_${CLI_VERSION}_Linux_x86_64.tar.gz"
+          echo "Downloading connect-iq-sdk-manager-cli v${CLI_VERSION}..."
+          curl -fsSL "$CLI_URL" -o /tmp/ciq-cli.tar.gz
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf /tmp/ciq-cli.tar.gz -C "$HOME/.local/bin" connect-iq-sdk-manager
+          rm /tmp/ciq-cli.tar.gz
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-          mkdir -p "$HOME/connectiq-sdk"
-          curl -fSL "$SDK_URL" -o /tmp/sdk.zip
-          unzip -qo /tmp/sdk.zip -d "$HOME/connectiq-sdk"
-          rm /tmp/sdk.zip
-
-          # Find the bin directory
-          SDK_BIN=$(find "$HOME/connectiq-sdk" -type f -name "monkeyc" -printf '%h\n' | head -1)
-          if [ -z "$SDK_BIN" ]; then
-            echo "::error::monkeyc not found in downloaded SDK archive."
-            exit 1
-          fi
-
-          echo "SDK bin: $SDK_BIN"
-          echo "$SDK_BIN" >> "$GITHUB_PATH"
-
-      - name: Accept Garmin SDK license
+      - name: Download Garmin Connect IQ SDK
+        env:
+          GARMIN_USERNAME: ${{ secrets.GARMIN_USERNAME }}
+          GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
         run: |
           # By using this SDK in CI, we acknowledge acceptance of the
           # Garmin Connect IQ SDK License Agreement and the Connect IQ
           # Application Developer Agreement.
           # See: https://developer.garmin.com/connect-iq/sdk/
-          echo "Garmin Connect IQ SDK license accepted for CI build use."
+          connect-iq-sdk-manager sdk set latest
+          echo "$(connect-iq-sdk-manager sdk current-path --bin)" >> "$GITHUB_PATH"
+
+      - name: Download device files
+        env:
+          GARMIN_USERNAME: ${{ secrets.GARMIN_USERNAME }}
+          GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+        run: |
+          connect-iq-sdk-manager device download --manifest manifest.xml
 
       - name: Verify monkeyc is available
         run: |

@@ -70,7 +70,14 @@ The repository includes a workflow (`.github/workflows/build.yml`) that builds t
 
 ### Setup
 
-The workflow automatically downloads the latest Connect IQ SDK directly from [Garmin's developer site](https://developer.garmin.com/connect-iq/sdk/) using the public SDK manifest (`sdks.json`). No repository secrets are required for the build.
+The workflow uses [`connect-iq-sdk-manager-cli`](https://github.com/lindell/connect-iq-sdk-manager-cli) to download the Connect IQ SDK **and** the required device definition files. Device downloads require a free Garmin developer account.
+
+1. Create a free account at [developer.garmin.com](https://developer.garmin.com/).
+2. In your repository, go to **Settings → Secrets and variables → Actions** and add:
+   - `GARMIN_USERNAME` – your Garmin developer email
+   - `GARMIN_PASSWORD` – your Garmin developer password
+
+> **Tip:** Use a dedicated Garmin developer account for CI rather than a personal account.
 
 By running the workflow, you acknowledge acceptance of the [Garmin Connect IQ SDK License Agreement](https://developer.garmin.com/connect-iq/sdk/).
 
@@ -86,10 +93,10 @@ By running the workflow, you acknowledge acceptance of the [Garmin Connect IQ SD
 | Problem | Fix |
 |---|---|
 | `monkeyc: command not found` | Make sure the Connect IQ SDK `bin` directory is on your `PATH`. |
-| Device ID error during build | Use a supported device id: `edge530` or `edge1040`. Run `monkeyc -h` to list devices. |
+| Device ID error during build | Ensure device files are installed. In CI the workflow uses `connect-iq-sdk-manager-cli` to download them. Locally, use the Connect IQ SDK Manager to install device files for `edge530` or `edge1040`. |
 | Tone does not play | Not all devices/firmware versions support `Attention.playTone`. Update firmware to the latest version. |
 | App does not appear after sideloading | Ensure the file is in `/GARMIN/APPS/`. Restart the device. Check that the `.prg` was built for the correct device. |
-| CI fails downloading SDK | The workflow fetches `sdks.json` from Garmin. If it fails, check that `developer.garmin.com` is accessible or retry the workflow. |
+| CI fails downloading SDK or devices | Ensure `GARMIN_USERNAME` and `GARMIN_PASSWORD` secrets are configured in the repository. Check that `developer.garmin.com` is accessible or retry the workflow. |
 
 ## Project Structure
 
