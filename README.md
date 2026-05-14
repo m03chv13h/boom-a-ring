@@ -70,17 +70,9 @@ The repository includes a workflow (`.github/workflows/build.yml`) that builds t
 
 ### Setup
 
-Because Garmin requires license acceptance before downloading the SDK, the workflow expects a repository secret:
+The workflow automatically downloads the latest Connect IQ SDK directly from [Garmin's developer site](https://developer.garmin.com/connect-iq/sdk/) using the public SDK manifest (`sdks.json`). No repository secrets are required for the build.
 
-| Secret | Description |
-|---|---|
-| `GARMIN_SDK_URL` | Direct URL to a Connect IQ SDK `.zip` archive. Host the SDK yourself (e.g. in a private bucket or artifact store) after accepting the Garmin license. |
-
-**To add the secret:**
-
-1. Go to **Settings → Secrets and variables → Actions** in your GitHub repo.
-2. Click **New repository secret**.
-3. Name: `GARMIN_SDK_URL`, Value: the download URL for the SDK zip.
+By running the workflow, you acknowledge acceptance of the [Garmin Connect IQ SDK License Agreement](https://developer.garmin.com/connect-iq/sdk/).
 
 ### Download the Artifact
 
@@ -97,7 +89,7 @@ Because Garmin requires license acceptance before downloading the SDK, the workf
 | Device ID error during build | Use a supported device id: `edge530` or `edge1040`. Run `monkeyc -h` to list devices. |
 | Tone does not play | Not all devices/firmware versions support `Attention.playTone`. Update firmware to the latest version. |
 | App does not appear after sideloading | Ensure the file is in `/GARMIN/APPS/`. Restart the device. Check that the `.prg` was built for the correct device. |
-| CI fails with "GARMIN_SDK_URL secret is not set" | Add the `GARMIN_SDK_URL` repository secret (see above). |
+| CI fails downloading SDK | The workflow fetches `sdks.json` from Garmin. If it fails, check that `developer.garmin.com` is accessible or retry the workflow. |
 
 ## Project Structure
 
