@@ -70,7 +70,7 @@ The repository includes a workflow (`.github/workflows/build.yml`) that builds t
 
 ### Setup
 
-The workflow automatically downloads the latest Connect IQ SDK directly from [Garmin's developer site](https://developer.garmin.com/connect-iq/sdk/) using the public SDK manifest (`sdks.json`). No repository secrets are required for the build.
+The workflow automatically downloads the official [Connect IQ SDK Manager](https://developer.garmin.com/connect-iq/sdk/) from Garmin and uses it in headless mode to install the SDK and required device files. No repository secrets are required for the build.
 
 By running the workflow, you acknowledge acceptance of the [Garmin Connect IQ SDK License Agreement](https://developer.garmin.com/connect-iq/sdk/).
 
@@ -86,10 +86,10 @@ By running the workflow, you acknowledge acceptance of the [Garmin Connect IQ SD
 | Problem | Fix |
 |---|---|
 | `monkeyc: command not found` | Make sure the Connect IQ SDK `bin` directory is on your `PATH`. |
-| Device ID error during build | Use a supported device id: `edge530` or `edge1040`. Run `monkeyc -h` to list devices. |
+| Device ID error during build | Ensure device files are installed. The CI workflow uses the official Garmin SDK Manager to download them. Locally, use the Connect IQ SDK Manager to install device files for `edge530` or `edge1040`. |
 | Tone does not play | Not all devices/firmware versions support `Attention.playTone`. Update firmware to the latest version. |
 | App does not appear after sideloading | Ensure the file is in `/GARMIN/APPS/`. Restart the device. Check that the `.prg` was built for the correct device. |
-| CI fails downloading SDK | The workflow fetches `sdks.json` from Garmin. If it fails, check that `developer.garmin.com` is accessible or retry the workflow. |
+| CI fails downloading SDK | Check that `developer.garmin.com` is accessible or retry the workflow. |
 
 ## Project Structure
 
