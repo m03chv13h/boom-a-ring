@@ -1,6 +1,6 @@
-# Edge Bell – Garmin Connect IQ Bicycle Bell App
+# Edge Bell – Garmin Connect IQ Bicycle Bell Data Field
 
-A simple Garmin Connect IQ app that turns your **Edge 530** or **Edge 1040** into a bicycle bell. On launch it displays a large **BELL** label and plays a loud bell-like tone. Long-press the **up** button to ring the bell again.
+A Garmin Connect IQ **data field** that turns your **Edge 530** or **Edge 1040** into a bicycle bell. Add the data field to an activity screen, then trigger the bell with touch or a button press.
 
 ## ⚠ Safety Disclaimer
 
@@ -15,12 +15,12 @@ The Garmin Edge beeper is **not** a legal or safe replacement for a physical bic
 
 ## How It Works
 
-1. The app opens a full-screen view with the word **BELL**.
-2. On show it plays a tone using `Toybox.Attention.playTone`.
-3. If `Attention.ToneProfile` is available, a bike-bell "tring-tring" pattern is played:
+1. The data field displays the word **BELL** in the configured field slot.
+2. If `Attention.ToneProfile` is available, a bike-bell "tring-tring" pattern is played:
    - 3 200 Hz → 2 800 Hz → 2 500 Hz (first strike with decay), 120 ms silence, then the same strike again.
-4. Otherwise it falls back to `Attention.TONE_LOUD_BEEP`.
-5. Long-press the **up** button (≥ 500 ms) to replay the tone.
+3. Otherwise it falls back to `Attention.TONE_LOUD_BEEP`.
+4. **Edge 1040** (touch screen): touch and hold the data field to ring continuously; release to stop.
+5. **Edge 530** (buttons): press and hold the **up** button for ≥ 500 ms to start ringing continuously; release the button to stop.
 
 ## Local Development
 
@@ -61,8 +61,8 @@ monkeydo dist/EdgeBell.prg edge530
    /GARMIN/APPS/EdgeBell.prg
    ```
 3. Safely eject / disconnect the device.
-4. Restart the device if the app does not appear immediately.
-5. Open the app from the device menu.
+4. Restart the device if the data field does not appear immediately.
+5. Add the **Edge Bell** data field to an activity screen (e.g. Ride) via the device settings.
 
 ## GitHub Actions (CI)
 
@@ -100,8 +100,8 @@ By running the workflow, you acknowledge acceptance of the [Garmin Connect IQ SD
 ├── monkey.jungle
 ├── source/
 │   ├── BellApp.mc          # Application entry point
-│   ├── BellView.mc         # UI view & tone logic
-│   └── BellDelegate.mc     # Button / key handler
+│   ├── BellView.mc         # Data field view & tone logic
+│   └── BellDelegate.mc     # Touch / button input handler
 ├── resources/
 │   ├── strings/
 │   │   └── strings.xml     # App name string

@@ -1,21 +1,31 @@
+import Toybox.Activity;
 import Toybox.Attention;
 import Toybox.Graphics;
 import Toybox.Lang;
+import Toybox.Timer;
 import Toybox.WatchUi;
 
-//! View that displays "BELL" and plays a tone on load.
-class BellView extends WatchUi.View {
+//! Data field that displays "BELL" and plays a tone continuously while input
+//! is held.  On touch devices (Edge 1040) ringing starts on touch and stops
+//! when the finger is lifted.  On button devices (Edge 530) ringing starts
+//! after the up button has been held for 500 ms and stops on release.
+class BellDataField extends WatchUi.DataField {
+
+    //! Whether the bell is currently ringing repeatedly.
+    private var _ringing as Boolean = false;
+
+    //! Timer used to repeat the tone while ringing.
+    private var _timer as Timer.Timer or Null;
 
     function initialize() {
-        View.initialize();
+        DataField.initialize();
     }
 
-    //! Load resources when the view becomes visible.
-    function onShow() as Void {
-        playBellTone();
+    //! No activity data is needed – this field is purely a bell trigger.
+    function compute(info as Activity.Info) as Void {
     }
 
-    //! Draw the BELL label centred on screen.
+    //! Draw the BELL label centred on the data-field area.
     function onUpdate(dc as Graphics.Dc) as Void {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         dc.clear();
@@ -31,6 +41,32 @@ class BellView extends WatchUi.View {
             "BELL",
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
         );
+    }
+
+    //! Begin repeating the bell tone.
+    function startRinging() as Void {
+        if (!_ringing) {
+            _ringing = true;
+            playBellTone();
+            _timer = new Timer.Timer();
+            _timer.start(method(:onRingTimer), 500, true);
+        }
+    }
+
+    //! Stop repeating the bell tone.
+    function stopRinging() as Void {
+        _ringing = false;
+        if (_timer != null) {
+            _timer.stop();
+            _timer = null;
+        }
+    }
+
+    //! Timer callback – play another tone if still ringing.
+    function onRingTimer() as Void {
+        if (_ringing) {
+            playBellTone();
+        }
     }
 
     //! Play a bell-like tone using the best available API.
