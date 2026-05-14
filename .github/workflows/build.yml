@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
@@ -35,11 +36,21 @@ jobs:
         env:
           GARMIN_USERNAME: ${{ secrets.GARMIN_USERNAME }}
           GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+        timeout-minutes: 5
         run: |
           # By using this SDK in CI, we acknowledge acceptance of the
           # Garmin Connect IQ SDK License Agreement and the Connect IQ
           # Application Developer Agreement.
           # See: https://developer.garmin.com/connect-iq/sdk/
+
+          # Validate credentials are set to avoid browser-based OAuth fallback
+          # which hangs forever in CI (http://localhost:43181/login)
+          if [ -z "$GARMIN_USERNAME" ] || [ -z "$GARMIN_PASSWORD" ]; then
+            echo "::error::GARMIN_USERNAME and GARMIN_PASSWORD secrets must be configured in the repository settings."
+            echo "Without credentials, the SDK manager falls back to browser-based login which hangs in CI."
+            exit 1
+          fi
+
           connect-iq-sdk-manager agreement accept
           connect-iq-sdk-manager login --username="$GARMIN_USERNAME" --password="$GARMIN_PASSWORD"
           connect-iq-sdk-manager sdk set latest
