@@ -29,7 +29,7 @@ jobs:
             -o /tmp/ciq-cli.tar.gz
           sudo tar -xzf /tmp/ciq-cli.tar.gz -C /usr/local/bin connect-iq-sdk-manager
           rm /tmp/ciq-cli.tar.gz
-          connect-iq-sdk-manager --version
+          connect-iq-sdk-manager version
 
       - name: Install SDK and devices
         env:
