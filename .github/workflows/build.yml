@@ -23,7 +23,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libsecret-1-0 libwebkit2gtk-4.0-37
+          sudo apt-get install -y libsecret-1-0 libwebkit2gtk-4.0-37 xvfb
 
       - name: Download Garmin Connect IQ SDK Manager
         run: |
@@ -44,7 +44,7 @@ jobs:
           # Garmin Connect IQ SDK License Agreement and the Connect IQ
           # Application Developer Agreement.
           # See: https://developer.garmin.com/connect-iq/sdk/
-          "$HOME/connectiq-sdk-manager/bin/sdkmanager" --headless \
+          xvfb-run "$HOME/connectiq-sdk-manager/bin/sdkmanager" --headless \
             --accept-license --sdk-version=latest \
             --device=edge530 --device=edge1040
 
