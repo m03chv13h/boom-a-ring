@@ -1,6 +1,7 @@
-import Toybox.Graphics;
-import Toybox.WatchUi;
 import Toybox.Attention;
+import Toybox.Graphics;
+import Toybox.Lang;
+import Toybox.WatchUi;
 
 //! View that displays "BELL" and plays a tone on load.
 class BellView extends WatchUi.View {

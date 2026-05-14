@@ -1,3 +1,4 @@
+import Toybox.Lang;
 import Toybox.WatchUi;
 
 //! Input delegate that replays the bell tone on any key press.

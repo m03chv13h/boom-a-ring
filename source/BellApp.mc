@@ -1,4 +1,5 @@
 import Toybox.Application;
+import Toybox.Lang;
 import Toybox.WatchUi;
 
 //! Edge Bell application entry point.
