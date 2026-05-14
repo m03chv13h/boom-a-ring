@@ -70,24 +70,9 @@ The repository includes a workflow (`.github/workflows/build.yml`) that builds t
 
 ### Setup
 
-The workflow uses [connect-iq-sdk-manager-cli](https://github.com/lindell/connect-iq-sdk-manager-cli) to download the Garmin Connect IQ SDK and accept the license automatically. It requires the following repository secrets:
+The workflow automatically downloads the latest Connect IQ SDK directly from [Garmin's developer site](https://developer.garmin.com/connect-iq/sdk/) using the public SDK manifest (`sdks.json`). No repository secrets are required for the build.
 
-| Secret | Description |
-|---|---|
-| `GARMIN_USERNAME` | Your Garmin developer account username (email). |
-| `GARMIN_PASSWORD` | Your Garmin developer account password. |
-| `CIQ_AGREEMENT_HASH` | *(Optional)* Hash of the SDK license agreement you have read locally. If omitted, the latest agreement is accepted automatically. |
-
-**To obtain the agreement hash (recommended for CI reproducibility):**
-
-1. Install `connect-iq-sdk-manager-cli` locally (see [install instructions](https://github.com/lindell/connect-iq-sdk-manager-cli#install)).
-2. Run `connect-iq-sdk-manager agreement view` — read and review the license.
-3. Copy the agreement hash printed at the end.
-
-**To add the secrets:**
-
-1. Go to **Settings → Secrets and variables → Actions** in your GitHub repo.
-2. Click **New repository secret** and add `GARMIN_USERNAME`, `GARMIN_PASSWORD`, and optionally `CIQ_AGREEMENT_HASH`.
+By running the workflow, you acknowledge acceptance of the [Garmin Connect IQ SDK License Agreement](https://developer.garmin.com/connect-iq/sdk/).
 
 ### Download the Artifact
 
@@ -104,7 +89,7 @@ The workflow uses [connect-iq-sdk-manager-cli](https://github.com/lindell/connec
 | Device ID error during build | Use a supported device id: `edge530` or `edge1040`. Run `monkeyc -h` to list devices. |
 | Tone does not play | Not all devices/firmware versions support `Attention.playTone`. Update firmware to the latest version. |
 | App does not appear after sideloading | Ensure the file is in `/GARMIN/APPS/`. Restart the device. Check that the `.prg` was built for the correct device. |
-| CI fails with login or SDK download errors | Verify that `GARMIN_USERNAME` and `GARMIN_PASSWORD` secrets are set correctly (see above). |
+| CI fails downloading SDK | The workflow fetches `sdks.json` from Garmin. If it fails, check that `developer.garmin.com` is accessible or retry the workflow. |
 
 ## Project Structure
 
