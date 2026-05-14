@@ -1,6 +1,6 @@
 # Edge Bell – Garmin Connect IQ Bicycle Bell App
 
-A simple Garmin Connect IQ app that turns your **Edge 530** or **Edge 1040** into a bicycle bell. On launch it displays a large **BELL** label and plays a loud bell-like tone. Press any button to ring the bell again.
+A simple Garmin Connect IQ app that turns your **Edge 530** or **Edge 1040** into a bicycle bell. On launch it displays a large **BELL** label and plays a loud bell-like tone. Long-press the **up** button to ring the bell again.
 
 ## ⚠ Safety Disclaimer
 
@@ -20,7 +20,7 @@ The Garmin Edge beeper is **not** a legal or safe replacement for a physical bic
 3. If `Attention.ToneProfile` is available, a bike-bell "tring-tring" pattern is played:
    - 3 200 Hz → 2 800 Hz → 2 500 Hz (first strike with decay), 120 ms silence, then the same strike again.
 4. Otherwise it falls back to `Attention.TONE_LOUD_BEEP`.
-5. Any button / key press replays the tone.
+5. Long-press the **up** button (≥ 500 ms) to replay the tone.
 
 ## Local Development
 
