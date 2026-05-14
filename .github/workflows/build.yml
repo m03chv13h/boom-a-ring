@@ -53,7 +53,7 @@ jobs:
 
           connect-iq-sdk-manager agreement accept
           connect-iq-sdk-manager login --username="$GARMIN_USERNAME" --password="$GARMIN_PASSWORD"
-          connect-iq-sdk-manager sdk set ^6.2.2
+          connect-iq-sdk-manager sdk set ^9.1.0
           connect-iq-sdk-manager device download --manifest=manifest.xml
 
           # Add SDK bin directory to PATH
