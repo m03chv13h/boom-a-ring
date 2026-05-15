@@ -52,6 +52,7 @@ class BellDelegate extends WatchUi.BehaviorDelegate {
     //! Start a 500 ms timer when the laps button (KEY_ENTER) is pressed.
     function onKeyPressed(keyEvent as WatchUi.KeyEvent) as Boolean {
         if (keyEvent.getKey() == WatchUi.KEY_ENTER) {
+            _cancelLongPressTimer();
             _longPressTimer = new Timer.Timer();
             _longPressTimer.start(method(:onLongPressTimer), 500, false);
             return true;
