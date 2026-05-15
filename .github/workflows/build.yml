@@ -83,6 +83,48 @@ jobs:
             -y "$HOME/.garmin/developer_key.der" \
             -d edge530
 
+      - name: Build test PRG for edge530
+        run: |
+          monkeyc -t \
+            -o dist/EdgeBellTest.prg \
+            -f monkey.jungle \
+            -y "$HOME/.garmin/developer_key.der" \
+            -d edge530
+
+      - name: Install Xvfb
+        run: sudo apt-get install -y --no-install-recommends xvfb
+
+      - name: Run unit tests on edge530 emulator
+        run: |
+          # Start a virtual framebuffer so the Connect IQ simulator (a Java/Swing
+          # GUI application) can open its window without a real display.
+          Xvfb :99 -screen 0 1280x800x24 -ac &
+          export DISPLAY=:99
+
+          # Poll until Xvfb is ready to accept connections (up to 30 s).
+          for i in $(seq 1 30); do
+            xdpyinfo -display :99 >/dev/null 2>&1 && { echo "Xvfb ready (${i}s)"; break; }
+            sleep 1
+          done
+          xdpyinfo -display :99 >/dev/null 2>&1 || { echo "::error::Xvfb did not start in time"; exit 1; }
+
+          # Start the Connect IQ simulator daemon in the background.
+          connectiq &
+          CONNECTIQ_PID=$!
+
+          # Poll until the simulator process is responsive (up to 60 s).
+          # The simulator writes a PID/lock file under ~/.garmin when it is ready.
+          for i in $(seq 1 60); do
+            kill -0 "$CONNECTIQ_PID" 2>/dev/null || { echo "::error::Connect IQ simulator exited unexpectedly"; exit 1; }
+            ls "$HOME/.garmin/ConnectIQ/"*.pid 2>/dev/null && { echo "Simulator ready (${i}s)"; break; }
+            sleep 1
+          done
+
+          # Execute the test binary on the edge530 emulator.
+          # monkeydo exits non-zero when any unit test fails.
+          monkeydo dist/EdgeBellTest.prg edge530
+        timeout-minutes: 5
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
