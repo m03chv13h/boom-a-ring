@@ -15,7 +15,7 @@ The Garmin Edge beeper is **not** a legal or safe replacement for a physical bic
 
 ## How It Works
 
-1. The data field displays the word **BELL** in the configured field slot.
+1. The data field displays **[bell]** in the configured field slot.
 2. If `Attention.ToneProfile` is available, a bike-bell "tring-tring" pattern is played:
    - 3 200 Hz → 2 800 Hz → 2 500 Hz (first strike with decay), 120 ms silence, then the same strike again.
 3. Otherwise it falls back to `Attention.TONE_LOUD_BEEP`.

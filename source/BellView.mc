@@ -25,7 +25,7 @@ class BellDataField extends WatchUi.DataField {
     function compute(info as Activity.Info) as Void {
     }
 
-    //! Draw the BELL label centred on the data-field area.
+    //! Draw the [bell] label centred on the data-field area.
     function onUpdate(dc as Graphics.Dc) as Void {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         dc.clear();
@@ -38,7 +38,7 @@ class BellDataField extends WatchUi.DataField {
             w / 2,
             h / 2,
             Graphics.FONT_LARGE,
-            "BELL",
+            "[bell]",
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
         );
     }
