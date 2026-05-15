@@ -37,6 +37,13 @@ class BellDataField extends WatchUi.DataField {
     function compute(info as Activity.Info) as Void {
     }
 
+    //! Play the bell tone when the user presses the lap button.
+    //! On Edge 530 (non-touch), key events are not routed to data-field
+    //! delegates, so we use onTimerLap() as the trigger for the bell.
+    function onTimerLap() as Void {
+        playBellTone();
+    }
+
     //! Draw the [bell] label centred on the data-field area.
     function onUpdate(dc as Graphics.Dc) as Void {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
@@ -85,24 +92,32 @@ class BellDataField extends WatchUi.DataField {
     static function playBellTone() as Void {
         if (Attention has :playTone) {
             if (Attention has :ToneProfile) {
-                // Bike-bell "tring-tring" pattern: two rapid strikes
-                // with a slight downward frequency sweep to mimic the
-                // resonant decay of a metal dome being struck.
-                var tones = [
-                    // First "tring"
-                    new Attention.ToneProfile(3200, 80),
-                    new Attention.ToneProfile(2800, 60),
-                    new Attention.ToneProfile(2500, 40),
-                    // Pause between strikes
-                    new Attention.ToneProfile(0, 120),
-                    // Second "tring"
-                    new Attention.ToneProfile(3200, 80),
-                    new Attention.ToneProfile(2800, 60),
-                    new Attention.ToneProfile(2500, 40),
-                ] as Array<Attention.ToneProfile>;
-                Attention.playTone({:toneProfile => tones});
-            } else {
+                try {
+                    // Bike-bell "tring-tring" pattern: two rapid strikes
+                    // with a slight downward frequency sweep to mimic the
+                    // resonant decay of a metal dome being struck.
+                    var tones = [
+                        // First "tring"
+                        new Attention.ToneProfile(3200, 80),
+                        new Attention.ToneProfile(2800, 60),
+                        new Attention.ToneProfile(2500, 40),
+                        // Pause between strikes
+                        new Attention.ToneProfile(0, 120),
+                        // Second "tring"
+                        new Attention.ToneProfile(3200, 80),
+                        new Attention.ToneProfile(2800, 60),
+                        new Attention.ToneProfile(2500, 40),
+                    ] as Array<Attention.ToneProfile>;
+                    Attention.playTone({:toneProfile => tones});
+                    return;
+                } catch (e instanceof Lang.Exception) {
+                    // ToneProfile not supported at runtime – fall through.
+                }
+            }
+            try {
                 Attention.playTone(Attention.TONE_LOUD_BEEP);
+            } catch (e instanceof Lang.Exception) {
+                // Tone not supported on this device – silently ignore.
             }
         }
     }

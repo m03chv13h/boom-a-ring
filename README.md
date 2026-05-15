@@ -20,7 +20,7 @@ The Garmin Edge beeper is **not** a legal or safe replacement for a physical bic
    - 3 200 Hz → 2 800 Hz → 2 500 Hz (first strike with decay), 120 ms silence, then the same strike again.
 3. Otherwise it falls back to `Attention.TONE_LOUD_BEEP`.
 4. **Edge 1040** (touch screen): touch and hold the data field to ring continuously; release to stop.
-5. **Edge 530** (buttons): the bell rings automatically while the data field is active (visible on screen) and stops when you navigate away.
+5. **Edge 530** (buttons): the bell rings automatically while the data field is active (visible on screen) and stops when you navigate away. Pressing the lap button also triggers a single bell tone.
 
 ## Local Development
 
