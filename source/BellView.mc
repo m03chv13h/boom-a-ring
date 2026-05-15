@@ -62,6 +62,11 @@ class BellDataField extends WatchUi.DataField {
         );
     }
 
+    //! Returns true if the bell is currently ringing.
+    function isRinging() as Boolean {
+        return _ringing;
+    }
+
     //! Begin repeating the bell tone.
     function startRinging() as Void {
         if (!_ringing) {
