@@ -12,6 +12,8 @@ class BellApp extends Application.AppBase {
     //! Return the data-field view and its input delegate.
     function getInitialView() as [Views] or [Views, InputDelegates] {
         var dataField = new BellDataField();
-        return [dataField, new BellDelegate(dataField)];
+        var delegate = new BellDelegate(dataField);
+        dataField.setDelegate(delegate);
+        return [dataField, delegate];
     }
 }

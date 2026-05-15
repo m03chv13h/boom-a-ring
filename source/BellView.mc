@@ -17,8 +17,36 @@ class BellDataField extends WatchUi.DataField {
     //! Timer used to repeat the tone while ringing.
     private var _timer as Timer.Timer or Null;
 
+    //! Reference to the input delegate so we can reset its state on
+    //! page transitions (Edge 530 uses the UP button for both page
+    //! changes and bell activation).
+    private var _delegate as BellDelegate or Null;
+
     function initialize() {
         DataField.initialize();
+    }
+
+    //! Store a reference to the input delegate.
+    function setDelegate(delegate as BellDelegate) as Void {
+        _delegate = delegate;
+    }
+
+    //! Reset delegate input state when the data field becomes visible so
+    //! that an UP key press used for page navigation is not mistaken for
+    //! a bell trigger.
+    function onShow() as Void {
+        if (_delegate != null) {
+            _delegate.resetInput();
+        }
+    }
+
+    //! Stop ringing and reset delegate state when the data field is
+    //! hidden (user navigated to a different page).
+    function onHide() as Void {
+        stopRinging();
+        if (_delegate != null) {
+            _delegate.resetInput();
+        }
     }
 
     //! No activity data is needed – this field is purely a bell trigger.
