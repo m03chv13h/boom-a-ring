@@ -13,7 +13,6 @@ class BellApp extends Application.AppBase {
     function getInitialView() as [Views] or [Views, InputDelegates] {
         var dataField = new BellDataField();
         var delegate = new BellDelegate(dataField);
-        dataField.setDelegate(delegate);
         return [dataField, delegate];
     }
 }

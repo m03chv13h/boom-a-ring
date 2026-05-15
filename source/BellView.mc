@@ -5,10 +5,11 @@ import Toybox.Lang;
 import Toybox.Timer;
 import Toybox.WatchUi;
 
-//! Data field that displays "BELL" and plays a tone continuously while input
-//! is held.  On touch devices (Edge 1040) ringing starts on touch and stops
-//! when the finger is lifted.  On button devices (Edge 530) ringing starts
-//! after the up button has been held for 500 ms and stops on release.
+//! Data field that displays "BELL" and plays a tone continuously while
+//! active.  On touch devices (Edge 1040) ringing starts on touch-hold and
+//! stops when the finger is lifted.  On button devices (Edge 530) the bell
+//! rings automatically while the data field is visible and stops when it is
+//! hidden (no button input required).
 class BellDataField extends WatchUi.DataField {
 
     //! Whether the bell is currently ringing repeatedly.
@@ -17,39 +18,19 @@ class BellDataField extends WatchUi.DataField {
     //! Timer used to repeat the tone while ringing.
     private var _timer as Timer.Timer or Null;
 
-    //! Reference to the input delegate so we can reset its state on
-    //! page transitions (Edge 530 uses the UP button for both page
-    //! changes and bell activation).
-    private var _delegate as BellDelegate or Null;
-
     function initialize() {
         DataField.initialize();
     }
 
-    //! Store a reference to the input delegate.
-    function setDelegate(delegate as BellDelegate) as Void {
-        _delegate = delegate;
-    }
-
-    //! Play a single bell tone and reset delegate input state when the
-    //! data field becomes visible.  On Edge 530 the UP button is shared
-    //! between page navigation and bell activation – playing a tone here
-    //! ensures the bell rings immediately when the user switches to this
-    //! page.
+    //! Start ringing when the data field becomes visible (Edge 530 auto-ring).
+    //! On touch devices the delegate handles start/stop via touch events.
     function onShow() as Void {
-        if (_delegate != null) {
-            _delegate.resetInput();
-        }
-        playBellTone();
+        startRinging();
     }
 
-    //! Stop ringing and reset delegate state when the data field is
-    //! hidden (user navigated to a different page).
+    //! Stop ringing when the data field is hidden (user navigated away).
     function onHide() as Void {
         stopRinging();
-        if (_delegate != null) {
-            _delegate.resetInput();
-        }
     }
 
     //! No activity data is needed – this field is purely a bell trigger.
