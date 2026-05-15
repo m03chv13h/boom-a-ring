@@ -31,13 +31,16 @@ class BellDataField extends WatchUi.DataField {
         _delegate = delegate;
     }
 
-    //! Reset delegate input state when the data field becomes visible so
-    //! that an UP key press used for page navigation is not mistaken for
-    //! a bell trigger.
+    //! Play a single bell tone and reset delegate input state when the
+    //! data field becomes visible.  On Edge 530 the UP button is shared
+    //! between page navigation and bell activation – playing a tone here
+    //! ensures the bell rings immediately when the user switches to this
+    //! page.
     function onShow() as Void {
         if (_delegate != null) {
             _delegate.resetInput();
         }
+        playBellTone();
     }
 
     //! Stop ringing and reset delegate state when the data field is
