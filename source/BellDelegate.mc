@@ -90,4 +90,16 @@ class BellDelegate extends WatchUi.BehaviorDelegate {
         }
         return false;
     }
+
+    //! Cancel any pending hold timer and reset button state.
+    //! Called when the data field is shown or hidden so that a page-change
+    //! key press does not accidentally trigger the bell.
+    function resetInput() as Void {
+        _upPressTime = 0;
+        _upHeld = false;
+        if (_holdTimer != null) {
+            _holdTimer.stop();
+            _holdTimer = null;
+        }
+    }
 }
